@@ -6,12 +6,8 @@
   <title>{{ page.title }}</title>
 
   <!-- Google Font & Font Awesome -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-    rel="stylesheet">
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     /* Prevent horizontal scrolling & base styles */
@@ -35,9 +31,8 @@
 
     .video-slider-wrapper { margin-bottom:40px; width:100%; }
     .video-wrapper { position:relative; width:100%; }
-
     .video-container {
-      position:relative; width:100%; padding-bottom:56.25%; /*16:9*/ height:0;
+      position:relative; width:100%; padding-bottom:56.25%; height:0;
       overflow:hidden; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
     .video-container iframe {
@@ -65,7 +60,6 @@
       box-shadow:0 2px 6px rgba(0,0,0,0.2); transition:background 0.2s; z-index:2;
     }
     .mobile-nav .arrow:hover { background:#00337A; }
-
     @media (max-width:768px) {
       .video-wrapper .arrow { display:none; }
       .mobile-nav { display:flex; }
@@ -82,13 +76,11 @@
     }
     .slide .notice i { color:#004AAD; }
 
-    /* Center the button in the final slide's container */
+    /* Center Test button */
     .slide{{ total | plus:1 }} .video-container {
       display:flex; align-items:center; justify-content:center;
       padding-bottom:0; height:300px;
     }
-
-    /* Test button */
     .btn {
       background:#004AAD; color:#fff; padding:15px 30px;
       font-size:16px; border:none; border-radius:6px;
@@ -123,7 +115,6 @@
     <input type="radio" name="slider" id="slide{{ total | plus:1 }}">
 
     <div class="video-slider-wrapper">
-      <!-- video slides -->
       {% for video in site.data.videos %}
       <div class="slide slide{{ forloop.index }}">
         <h2>{{ video.title }}</h2>
@@ -136,10 +127,10 @@
           <div class="video-container">
             <iframe
               class="youtube-player"
-              src="https://www.youtube.com/embed/{{ video.id }}?enablejsapi=1"
+              src="https://www.youtube.com/embed/{{ video.id }}?enablejsapi=1&origin=*"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
+              allow="autoplay; fullscreen"
+            ></iframe>
           </div>
           <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
@@ -173,45 +164,44 @@
     </div>
   </div>
 
-  <!-- load YouTube Iframe API -->
+  <!-- YouTube Iframe API & Confetti & HeyForm -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script src="https://www.unpkg.com/@heyform-inc/embed@latest/dist/index.umd.js"></script>
   <script>
-    // Pause via postMessage rather than reloading
-    function pauseAllVideos() {
-      document.querySelectorAll('.youtube-player').forEach(function(iframe) {
-        iframe.contentWindow.postMessage(
-          JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }),
-          '*'
-        );
+    // initialize YT players
+    var players = [];
+    function onYouTubeIframeAPIReady(){
+      document.querySelectorAll('.youtube-player').forEach((iframe, idx) => {
+        players[idx] = new YT.Player(iframe);
       });
     }
+    function pauseAllVideos(){
+      players.forEach(p => { if(p && p.pauseVideo) p.pauseVideo(); });
+    }
 
-    // Attach pause handler to every navigation arrow
-    document.querySelectorAll('.arrow.prev, .arrow.next').forEach(function(el) {
-      el.addEventListener('click', pauseAllVideos);
+    // pause on slide change
+    document.querySelectorAll('input[name="slider"]').forEach(r => {
+      r.addEventListener('change', pauseAllVideos);
     });
 
-    // Confetti on final slide
-    document.getElementById('slide{{ final }}').addEventListener('change', function(e) {
-      if (e.target.checked) {
-        confetti({ particleCount:100, spread:70, origin:{y:0.6} });
-      }
+    // confetti on final slide
+    document.getElementById('slide{{ final }}').addEventListener('change', e => {
+      if(e.target.checked) confetti({ particleCount:100, spread:70, origin:{ y:0.6 } });
     });
 
-    // Final slide back button
-    document.getElementById('backButton').addEventListener('click', function() {
+    // final slide back buttons
+    document.getElementById('backButton').addEventListener('click', ()=> {
       document.getElementById('slide{{ total }}').checked = true;
       pauseAllVideos();
     });
-    document.getElementById('backButtonMobile').addEventListener('click', function() {
+    document.getElementById('backButtonMobile').addEventListener('click', ()=> {
       document.getElementById('slide{{ total }}').checked = true;
       pauseAllVideos();
     });
 
-    // Show HeyForm modal
-    document.getElementById('testButton').addEventListener('click', function() {
+    // open HeyForm
+    document.getElementById('testButton').addEventListener('click', ()=> {
       HeyForm.openModal('fPdwIszH');
     });
   </script>
