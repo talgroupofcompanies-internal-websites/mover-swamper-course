@@ -6,15 +6,11 @@
   <title>{{ page.title }}</title>
 
   <!-- Google Font & Font Awesome -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-    rel="stylesheet">
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    /* Base */
+    /* Prevent horizontal scrolling & base styles */
     body { font-family:'Montserrat',sans-serif;margin:0;padding:0;overflow-x:hidden;background:#f9f9f9;color:#333; }
     .container { max-width:800px;margin:40px auto;padding:0 20px; }
     h1 { text-align:center;color:#004AAD;margin-bottom:10px; }
@@ -25,19 +21,18 @@
 
     /* Slides */
     .slide { display:none; }
-    /* Show active slide */
     {% assign total = site.data.videos.size %}
     {% for video in site.data.videos %}
     #slide{{ forloop.index }}:checked ~ .video-slider-wrapper .slide{{ forloop.index }},
     {% endfor %}
-    #slide{{ total | plus:1 }}:checked ~ .video-slider-wrapper .slide{{ total | plus:1 }} {
+    #slide{{ total | plus: 1 }}:checked ~ .video-slider-wrapper .slide{{ total | plus: 1 }} {
       display:flex;flex-direction:column;align-items:center;
     }
 
     .video-slider-wrapper { margin-bottom:40px;width:100%; }
     .video-wrapper { position:relative;width:100%; }
     .video-container {
-      position:relative;width:100%;padding-bottom:56.25%;/*16:9*/height:0;
+      position:relative;width:100%;padding-bottom:56.25%;height:0;
       overflow:hidden;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
     .video-container iframe {
@@ -47,14 +42,16 @@
     /* Desktop arrows */
     .video-wrapper .arrow {
       position:absolute;top:50%;transform:translateY(-50%);
-      width:50px;height:50px;background:#004AAD;color:#fff;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;cursor:pointer;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);transition:background 0.2s;
+      width:50px;height:50px;background:#004AAD;color:#fff;
+      border-radius:50%;display:flex;align-items:center;
+      justify-content:center;cursor:pointer;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2);
+      transition:background 0.2s;
     }
     .video-wrapper .arrow:hover { background:#00337A; }
     .video-wrapper .prev { left:-70px; }
     .video-wrapper .next { right:-70px; }
-    /* reserve space on first/last */
+    /* reserve on first/last */
     .slide1 .prev, .slide{{ total | plus:1 }} .next { visibility:hidden; }
 
     /* Mobile nav */
@@ -74,27 +71,25 @@
     }
 
     /* Titles & notice */
-    .slide h2 { text-align:center;color:#004AAD;margin-bottom:10px;}
+    .slide h2 { text-align:center;color:#004AAD;margin-bottom:10px; }
     .slide .notice {
       display:inline-flex;align-items:center;gap:10px;background:#fff;
-      border-left:4px solid #004AAD;padding:10px 15px;font-weight:600;
-      margin:0 auto 20px;border-radius:4px;
+      border-left:4px solid #004AAD;padding:10px 15px;
+      font-weight:600;margin:0 auto 20px;border-radius:4px;
     }
     .slide .notice i { color:#004AAD; }
 
-    /* Button */
+    /* Take Test button */
     .btn {
-      display:block;margin:20px auto 0;
-      background:#004AAD;color:#fff;padding:15px 30px;
-      font-size:16px;border:none;border-radius:6px;
+      display:block;margin:20px auto 0;background:#004AAD;color:#fff;
+      padding:15px 30px;font-size:16px;border:none;border-radius:6px;
       cursor:pointer;transition:background 0.25s ease;
     }
     .btn:hover { background:#00337A; }
   </style>
 </head>
 <body>
-
-  <!-- HeyForm modal container -->
+  <!-- HeyForm modal -->
   <div
     data-heyform-id="fPdwIszH"
     data-heyform-type="modal"
@@ -104,21 +99,20 @@
     data-heyform-trigger-background="#1d4ed8"
     data-heyform-trigger-text="Open Form"
     data-heyform-hide-after-submit="false"
-    data-heyform-auto-close="5">
-  </div>
+    data-heyform-auto-close="5"></div>
 
   <div class="container">
     <h1>{{ page.title }}</h1>
     <p class="intro">{{ page.intro }}</p>
 
-    <!-- Radios -->
+    <!-- radios -->
     {% for video in site.data.videos %}
       <input type="radio" name="slider" id="slide{{ forloop.index }}" {% if forloop.first %}checked{% endif %}>
     {% endfor %}
     <input type="radio" name="slider" id="slide{{ total | plus:1 }}">
 
     <div class="video-slider-wrapper">
-      <!-- Video slides -->
+      <!-- video slides -->
       {% for video in site.data.videos %}
       <div class="slide slide{{ forloop.index }}">
         <h2>{{ video.title }}</h2>
@@ -130,9 +124,8 @@
           <label for="slide{{ forloop.index }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
           <div class="video-container">
             <iframe src="https://www.youtube.com/embed/{{ video.id }}"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-            </iframe>
+                    allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
+                    allowfullscreen></iframe>
           </div>
           <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
@@ -143,7 +136,7 @@
       </div>
       {% endfor %}
 
-      <!-- Final “Ready” slide -->
+      <!-- final slide -->
       {% assign final = total | plus:1 %}
       <div class="slide slide{{ final }}">
         <h2>You’re Ready!</h2>
@@ -153,6 +146,7 @@
         </div>
         <div class="video-wrapper">
           <label for="slide{{ total }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
+          <div class="video-container"><!-- empty placeholder --></div>
         </div>
         <div class="mobile-nav">
           <label for="slide{{ total }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
@@ -163,17 +157,13 @@
     </div>
   </div>
 
-  <!-- Confetti & HeyForm scripts -->
+  <!-- confetti & heyform -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script src="https://www.unpkg.com/@heyform-inc/embed@latest/dist/index.umd.js"></script>
   <script>
-    // Confetti on final slide
     document.getElementById('slide{{ final }}').addEventListener('change', e => {
-      if (e.target.checked) {
-        confetti({ particleCount:100, spread:70, origin:{y:0.6} });
-      }
+      if(e.target.checked) confetti({ particleCount:100, spread:70, origin:{y:0.6} });
     });
-    // Open HeyForm
     document.getElementById('testButton').addEventListener('click', () => {
       HeyForm.openModal('fPdwIszH');
     });
