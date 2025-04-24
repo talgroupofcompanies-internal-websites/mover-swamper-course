@@ -29,12 +29,13 @@
     {% for video in site.data.videos %}
     #slide{{ forloop.index }}:checked ~ .video-slider-wrapper .slide{{ forloop.index }},
     {% endfor %}
-    #slide{{ total | plus: 1 }}:checked ~ .video-slider-wrapper .slide{{ total | plus: 1 }} {
+    #slide{{ total | plus:1 }}:checked ~ .video-slider-wrapper .slide{{ total | plus:1 }} {
       display:flex; flex-direction:column; align-items:center;
     }
 
     .video-slider-wrapper { margin-bottom:40px; width:100%; }
     .video-wrapper { position:relative; width:100%; }
+
     .video-container {
       position:relative; width:100%; padding-bottom:56.25%; /*16:9*/ height:0;
       overflow:hidden; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);
@@ -54,7 +55,7 @@
     .video-wrapper .arrow:hover { background:#00337A; }
     .video-wrapper .prev { left:-70px; }
     .video-wrapper .next { right:-70px; }
-    .slide1 .prev, .slide{{ total | plus: 1 }} .next { visibility:hidden; }
+    .slide1 .prev, .slide{{ total | plus:1 }} .next { visibility:hidden; }
 
     /* Mobile nav */
     .mobile-nav { display:none; width:100%; margin-top:20px; justify-content:space-between; align-items:center; }
@@ -69,7 +70,7 @@
       .video-wrapper .arrow { display:none; }
       .mobile-nav { display:flex; }
       .slide1 .mobile-nav .prev,
-      .slide{{ total | plus: 1 }} .mobile-nav .next { visibility:hidden; }
+      .slide{{ total | plus:1 }} .mobile-nav .next { visibility:hidden; }
     }
 
     /* Titles & notice */
@@ -81,10 +82,19 @@
     }
     .slide .notice i { color:#004AAD; }
 
+    /* Center the button in the final slide's container */
+    .slide{{ total | plus:1 }} .video-container {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding-bottom:0; /* override 16:9 for final */
+      height:300px;     /* fixed height for button area */
+    }
+
     /* Test button */
     .btn {
-      display:block; margin:20px auto 0; background:#004AAD; color:#fff;
-      padding:15px 30px; font-size:16px; border:none; border-radius:6px;
+      background:#004AAD; color:#fff; padding:15px 30px;
+      font-size:16px; border:none; border-radius:6px;
       cursor:pointer; transition:background 0.25s ease;
     }
     .btn:hover { background:#00337A; }
@@ -125,10 +135,7 @@
           Important: Please watch the full video before moving on!
         </div>
         <div class="video-wrapper">
-          <!-- PREV now points to previous slide -->
-          <label for="slide{{ forloop.index | minus: 1 }}" class="arrow prev">
-            <i class="fa-solid fa-chevron-left"></i>
-          </label>
+          <label for="slide{{ forloop.index | minus:1 }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
           <div class="video-container">
             <iframe
               src="https://www.youtube.com/embed/{{ video.id }}"
@@ -136,17 +143,11 @@
               allowfullscreen>
             </iframe>
           </div>
-          <label for="slide{{ forloop.index | plus: 1 }}" class="arrow next">
-            <i class="fa-solid fa-chevron-right"></i>
-          </label>
+          <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
         <div class="mobile-nav">
-          <label for="slide{{ forloop.index | minus: 1 }}" class="arrow prev">
-            <i class="fa-solid fa-chevron-left"></i>
-          </label>
-          <label for="slide{{ forloop.index | plus: 1 }}" class="arrow next">
-            <i class="fa-solid fa-chevron-right"></i>
-          </label>
+          <label for="slide{{ forloop.index | minus:1 }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
+          <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
       </div>
       {% endfor %}
@@ -160,15 +161,16 @@
           You’ve completed all training videos. Click below to take the test!
         </div>
         <div class="video-wrapper">
-          <!-- JS-controlled Back button -->
           <div id="backButton" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></div>
-          <div class="video-container"></div><!-- placeholder -->
+          <div class="video-container">
+            <button id="testButton" class="btn">Take Certification Test</button>
+          </div>
+          <label for="slide{{ final }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
         <div class="mobile-nav">
           <div id="backButtonMobile" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></div>
           <label for="slide{{ final }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
-        <button id="testButton" class="btn">Take Certification Test</button>
       </div>
     </div>
   </div>
@@ -184,7 +186,7 @@
       }
     });
 
-    // Final slide Back button logic
+    // Back button logic
     document.getElementById('backButton').addEventListener('click', () => {
       document.getElementById('slide{{ total }}').checked = true;
     });
