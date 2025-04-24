@@ -6,8 +6,12 @@
   <title>{{ page.title }}</title>
 
   <!-- Google Font & Font Awesome -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     /* Prevent horizontal scrolling & base styles */
@@ -32,7 +36,7 @@
     .video-slider-wrapper { margin-bottom:40px; width:100%; }
     .video-wrapper { position:relative; width:100%; }
     .video-container {
-      position:relative; width:100%; padding-bottom:56.25%; height:0;
+      position:relative; width:100%; padding-bottom:56.25%; /*16:9*/ height:0;
       overflow:hidden; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
     .video-container iframe {
@@ -127,10 +131,11 @@
           <div class="video-container">
             <iframe
               class="youtube-player"
-              src="https://www.youtube.com/embed/{{ video.id }}?enablejsapi=1&origin=*"
+              id="player{{ forloop.index }}"
+              src="https://www.youtube.com/embed/{{ video.id }}?enablejsapi=1&origin={{ site.url }}"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allow="autoplay; fullscreen"
-            ></iframe>
+              allowfullscreen>
+            </iframe>
           </div>
           <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
@@ -164,44 +169,47 @@
     </div>
   </div>
 
-  <!-- YouTube Iframe API & Confetti & HeyForm -->
+  <!-- load YouTube Iframe API -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script src="https://www.unpkg.com/@heyform-inc/embed@latest/dist/index.umd.js"></script>
   <script>
-    // initialize YT players
-    var players = [];
-    function onYouTubeIframeAPIReady(){
-      document.querySelectorAll('.youtube-player').forEach((iframe, idx) => {
-        players[idx] = new YT.Player(iframe);
-      });
-    }
-    function pauseAllVideos(){
-      players.forEach(p => { if(p && p.pauseVideo) p.pauseVideo(); });
+    var players = {};
+
+    function onYouTubeIframeAPIReady() {
+      {% for video in site.data.videos %}
+        players[{{ forloop.index }}] = new YT.Player('player{{ forloop.index }}');
+      {% endfor %}
     }
 
-    // pause on slide change
-    document.querySelectorAll('input[name="slider"]').forEach(r => {
-      r.addEventListener('change', pauseAllVideos);
+    function pauseAll() {
+      Object.values(players).forEach(p => p.pauseVideo && p.pauseVideo());
+    }
+
+    // pause whenever any slide radio changes
+    document.querySelectorAll('input[name="slider"]').forEach(radio => {
+      radio.addEventListener('change', pauseAll);
     });
 
     // confetti on final slide
     document.getElementById('slide{{ final }}').addEventListener('change', e => {
-      if(e.target.checked) confetti({ particleCount:100, spread:70, origin:{ y:0.6 } });
+      if (e.target.checked) {
+        confetti({ particleCount:100, spread:70, origin:{y:0.6} });
+      }
     });
 
-    // final slide back buttons
-    document.getElementById('backButton').addEventListener('click', ()=> {
+    // final Back buttons
+    document.getElementById('backButton').addEventListener('click', () => {
       document.getElementById('slide{{ total }}').checked = true;
-      pauseAllVideos();
+      pauseAll();
     });
-    document.getElementById('backButtonMobile').addEventListener('click', ()=> {
+    document.getElementById('backButtonMobile').addEventListener('click', () => {
       document.getElementById('slide{{ total }}').checked = true;
-      pauseAllVideos();
+      pauseAll();
     });
 
     // open HeyForm
-    document.getElementById('testButton').addEventListener('click', ()=> {
+    document.getElementById('testButton').addEventListener('click', () => {
       HeyForm.openModal('fPdwIszH');
     });
   </script>
