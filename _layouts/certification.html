@@ -6,8 +6,12 @@
   <title>{{ page.title }}</title>
 
   <!-- Google Font & Font Awesome -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     /* Prevent horizontal scrolling & base styles */
@@ -33,7 +37,7 @@
     .video-wrapper { position:relative; width:100%; }
 
     .video-container {
-      position:relative; width:100%; padding-bottom:56.25%; height:0;
+      position:relative; width:100%; padding-bottom:56.25%; /*16:9*/ height:0;
       overflow:hidden; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
     .video-container iframe {
@@ -174,20 +178,17 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script src="https://www.unpkg.com/@heyform-inc/embed@latest/dist/index.umd.js"></script>
   <script>
-    // collect all YouTube players
-    var players = [];
-    function onYouTubeIframeAPIReady() {
+    // Pause via postMessage rather than reloading
+    function pauseAllVideos() {
       document.querySelectorAll('.youtube-player').forEach(function(iframe) {
-        players.push(new YT.Player(iframe));
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }),
+          '*'
+        );
       });
     }
 
-    // pause all videos whenever navigation happens
-    function pauseAllVideos() {
-      players.forEach(function(p) { p.pauseVideo(); });
-    }
-
-    // attach pause on arrow clicks (desktop + mobile)
+    // Attach pause handler to every navigation arrow
     document.querySelectorAll('.arrow.prev, .arrow.next').forEach(function(el) {
       el.addEventListener('click', pauseAllVideos);
     });
@@ -199,7 +200,7 @@
       }
     });
 
-    // Back button logic on final slide
+    // Final slide back button
     document.getElementById('backButton').addEventListener('click', function() {
       document.getElementById('slide{{ total }}').checked = true;
       pauseAllVideos();
@@ -209,7 +210,7 @@
       pauseAllVideos();
     });
 
-    // Open HeyForm modal
+    // Show HeyForm modal
     document.getElementById('testButton').addEventListener('click', function() {
       HeyForm.openModal('fPdwIszH');
     });
