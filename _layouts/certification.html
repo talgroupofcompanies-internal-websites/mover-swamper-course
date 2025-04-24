@@ -6,11 +6,11 @@
   <title>{{ page.title }}</title>
 
   <!-- Google Font & Font Awesome -->
-  <link 
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" 
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
     rel="stylesheet">
-  <link 
-    rel="stylesheet" 
+  <link
+    rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -23,7 +23,7 @@
     /* Hide radio inputs */
     input[name="slider"] { position:absolute; opacity:0; pointer-events:none; }
 
-    /* Slides */
+    /* Slides hidden by default */
     .slide { display:none; }
     {% assign total = site.data.videos.size %}
     {% for video in site.data.videos %}
@@ -36,7 +36,7 @@
     .video-slider-wrapper { margin-bottom:40px; width:100%; }
     .video-wrapper { position:relative; width:100%; }
     .video-container {
-      position:relative; width:100%; padding-bottom:56.25%; /* 16:9 */ height:0;
+      position:relative; width:100%; padding-bottom:56.25%; /*16:9*/ height:0;
       overflow:hidden; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
     .video-container iframe {
@@ -68,7 +68,8 @@
     @media (max-width:768px) {
       .video-wrapper .arrow { display:none; }
       .mobile-nav { display:flex; }
-      .slide1 .mobile-nav .prev, .slide{{ total | plus:1 }} .mobile-nav .next { visibility:hidden; }
+      .slide1 .mobile-nav .prev,
+      .slide{{ total | plus:1 }} .mobile-nav .next { visibility:hidden; }
     }
 
     /* Titles & notice */
@@ -90,7 +91,6 @@
   </style>
 </head>
 <body>
-
   <!-- HeyForm modal container -->
   <div
     data-heyform-id="fPdwIszH"
@@ -115,7 +115,7 @@
     <input type="radio" name="slider" id="slide{{ total | plus:1 }}">
 
     <div class="video-slider-wrapper">
-      <!-- each video slide -->
+      <!-- video slides -->
       {% for video in site.data.videos %}
       <div class="slide slide{{ forloop.index }}">
         <h2>{{ video.title }}</h2>
@@ -128,7 +128,7 @@
           <div class="video-container">
             <iframe
               src="https://www.youtube.com/embed/{{ video.id }}"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
               allowfullscreen>
             </iframe>
           </div>
@@ -150,13 +150,12 @@
           You’ve completed all training videos. Click below to take the test!
         </div>
         <div class="video-wrapper">
-          <!-- BACK arrow -->
-          <label for="slide{{ total }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
-          <!-- placeholder container so arrow is clickable -->
-          <div class="video-container"></div>
+          <!-- JS-controlled Back button -->
+          <div id="backButton" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></div>
+          <div class="video-container"><!-- placeholder to anchor arrow --></div>
         </div>
         <div class="mobile-nav">
-          <label for="slide{{ total }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
+          <div id="backButtonMobile" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></div>
           <label for="slide{{ final }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
         <button id="testButton" class="btn">Take Certification Test</button>
@@ -175,12 +174,12 @@
       }
     });
 
-    // Fallback JS: ensure Back arrow works
-    document.querySelectorAll('.slide{{ final }} .arrow.prev').forEach(el => {
-      el.addEventListener('click', e => {
-        e.preventDefault();
-        document.getElementById('slide{{ total }}').checked = true;
-      });
+    // Back buttons work via JS click handler
+    document.getElementById('backButton').addEventListener('click', () => {
+      document.getElementById('slide{{ total }}').checked = true;
+    });
+    document.getElementById('backButtonMobile').addEventListener('click', () => {
+      document.getElementById('slide{{ total }}').checked = true;
     });
 
     // Open HeyForm modal
