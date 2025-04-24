@@ -29,7 +29,7 @@
     {% for video in site.data.videos %}
     #slide{{ forloop.index }}:checked ~ .video-slider-wrapper .slide{{ forloop.index }},
     {% endfor %}
-    #slide{{ total | plus:1 }}:checked ~ .video-slider-wrapper .slide{{ total | plus:1 }} {
+    #slide{{ total | plus: 1 }}:checked ~ .video-slider-wrapper .slide{{ total | plus: 1 }} {
       display:flex; flex-direction:column; align-items:center;
     }
 
@@ -54,7 +54,7 @@
     .video-wrapper .arrow:hover { background:#00337A; }
     .video-wrapper .prev { left:-70px; }
     .video-wrapper .next { right:-70px; }
-    .slide1 .prev, .slide{{ total | plus:1 }} .next { visibility:hidden; }
+    .slide1 .prev, .slide{{ total | plus: 1 }} .next { visibility:hidden; }
 
     /* Mobile nav */
     .mobile-nav { display:none; width:100%; margin-top:20px; justify-content:space-between; align-items:center; }
@@ -69,7 +69,7 @@
       .video-wrapper .arrow { display:none; }
       .mobile-nav { display:flex; }
       .slide1 .mobile-nav .prev,
-      .slide{{ total | plus:1 }} .mobile-nav .next { visibility:hidden; }
+      .slide{{ total | plus: 1 }} .mobile-nav .next { visibility:hidden; }
     }
 
     /* Titles & notice */
@@ -91,6 +91,7 @@
   </style>
 </head>
 <body>
+
   <!-- HeyForm modal container -->
   <div
     data-heyform-id="fPdwIszH"
@@ -124,8 +125,10 @@
           Important: Please watch the full video before moving on!
         </div>
         <div class="video-wrapper">
-          <!-- labels still present for forward/back -->
-          <label for="slide{{ forloop.index }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
+          <!-- PREV now points to previous slide -->
+          <label for="slide{{ forloop.index | minus: 1 }}" class="arrow prev">
+            <i class="fa-solid fa-chevron-left"></i>
+          </label>
           <div class="video-container">
             <iframe
               src="https://www.youtube.com/embed/{{ video.id }}"
@@ -133,11 +136,17 @@
               allowfullscreen>
             </iframe>
           </div>
-          <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
+          <label for="slide{{ forloop.index | plus: 1 }}" class="arrow next">
+            <i class="fa-solid fa-chevron-right"></i>
+          </label>
         </div>
         <div class="mobile-nav">
-          <label for="slide{{ forloop.index }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
-          <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
+          <label for="slide{{ forloop.index | minus: 1 }}" class="arrow prev">
+            <i class="fa-solid fa-chevron-left"></i>
+          </label>
+          <label for="slide{{ forloop.index | plus: 1 }}" class="arrow next">
+            <i class="fa-solid fa-chevron-right"></i>
+          </label>
         </div>
       </div>
       {% endfor %}
@@ -175,18 +184,7 @@
       }
     });
 
-    // Universal fallback for all "prev" arrows: wire label prevs to JS
-    document.querySelectorAll('.video-wrapper .arrow.prev, .mobile-nav .arrow.prev').forEach(el => {
-      const target = el.getAttribute('for');
-      if (target) {
-        el.addEventListener('click', e => {
-          e.preventDefault();
-          document.getElementById(target).checked = true;
-        });
-      }
-    });
-
-    // Back button on final slide
+    // Final slide Back button logic
     document.getElementById('backButton').addEventListener('click', () => {
       document.getElementById('slide{{ total }}').checked = true;
     });
