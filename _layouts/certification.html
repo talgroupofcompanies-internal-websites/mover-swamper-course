@@ -6,12 +6,8 @@
   <title>{{ page.title }}</title>
 
   <!-- Google Font & Font Awesome -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-    rel="stylesheet">
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     /* Prevent horizontal scrolling & base styles */
@@ -37,7 +33,7 @@
     .video-wrapper { position:relative; width:100%; }
 
     .video-container {
-      position:relative; width:100%; padding-bottom:56.25%; /*16:9*/ height:0;
+      position:relative; width:100%; padding-bottom:56.25%; height:0;
       overflow:hidden; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
     .video-container iframe {
@@ -135,7 +131,8 @@
           <label for="slide{{ forloop.index | minus:1 }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
           <div class="video-container">
             <iframe
-              src="https://www.youtube.com/embed/{{ video.id }}"
+              class="youtube-player"
+              src="https://www.youtube.com/embed/{{ video.id }}?enablejsapi=1"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen>
             </iframe>
@@ -172,37 +169,48 @@
     </div>
   </div>
 
-  <!-- Confetti & HeyForm scripts -->
+  <!-- load YouTube Iframe API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script src="https://www.unpkg.com/@heyform-inc/embed@latest/dist/index.umd.js"></script>
   <script>
-    // Pause any playing video when navigating
-    document.querySelectorAll('.arrow').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('iframe').forEach(iframe => {
-          // reload iframe to stop playback
-          iframe.src = iframe.src;
-        });
+    // collect all YouTube players
+    var players = [];
+    function onYouTubeIframeAPIReady() {
+      document.querySelectorAll('.youtube-player').forEach(function(iframe) {
+        players.push(new YT.Player(iframe));
       });
+    }
+
+    // pause all videos whenever navigation happens
+    function pauseAllVideos() {
+      players.forEach(function(p) { p.pauseVideo(); });
+    }
+
+    // attach pause on arrow clicks (desktop + mobile)
+    document.querySelectorAll('.arrow.prev, .arrow.next').forEach(function(el) {
+      el.addEventListener('click', pauseAllVideos);
     });
 
     // Confetti on final slide
-    document.getElementById('slide{{ final }}').addEventListener('change', e => {
+    document.getElementById('slide{{ final }}').addEventListener('change', function(e) {
       if (e.target.checked) {
         confetti({ particleCount:100, spread:70, origin:{y:0.6} });
       }
     });
 
-    // Back button logic
-    document.getElementById('backButton').addEventListener('click', () => {
+    // Back button logic on final slide
+    document.getElementById('backButton').addEventListener('click', function() {
       document.getElementById('slide{{ total }}').checked = true;
+      pauseAllVideos();
     });
-    document.getElementById('backButtonMobile').addEventListener('click', () => {
+    document.getElementById('backButtonMobile').addEventListener('click', function() {
       document.getElementById('slide{{ total }}').checked = true;
+      pauseAllVideos();
     });
 
     // Open HeyForm modal
-    document.getElementById('testButton').addEventListener('click', () => {
+    document.getElementById('testButton').addEventListener('click', function() {
       HeyForm.openModal('fPdwIszH');
     });
   </script>
