@@ -6,22 +6,22 @@
   <title>{{ page.title }}</title>
 
   <!-- Google Font & Font Awesome -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" 
     rel="stylesheet">
-  <link
-    rel="stylesheet"
+  <link 
+    rel="stylesheet" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     /* Prevent horizontal scrolling & base styles */
-    body { font-family:'Montserrat',sans-serif;margin:0;padding:0;overflow-x:hidden;background:#f9f9f9;color:#333; }
-    .container { max-width:800px;margin:40px auto;padding:0 20px; }
-    h1 { text-align:center;color:#004AAD;margin-bottom:10px; }
-    p.intro { text-align:center;margin-bottom:30px;line-height:1.6; }
+    body { font-family:'Montserrat',sans-serif; margin:0; padding:0; overflow-x:hidden; background:#f9f9f9; color:#333; }
+    .container { max-width:800px; margin:40px auto; padding:0 20px; }
+    h1 { text-align:center; color:#004AAD; margin-bottom:10px; }
+    p.intro { text-align:center; margin-bottom:30px; line-height:1.6; }
 
-    /* Hide radios */
-    input[name="slider"] { position:absolute;opacity:0;pointer-events:none; }
+    /* Hide radio inputs */
+    input[name="slider"] { position:absolute; opacity:0; pointer-events:none; }
 
     /* Slides */
     .slide { display:none; }
@@ -29,29 +29,27 @@
     {% for video in site.data.videos %}
     #slide{{ forloop.index }}:checked ~ .video-slider-wrapper .slide{{ forloop.index }},
     {% endfor %}
-    #slide{{ total | plus: 1 }}:checked ~ .video-slider-wrapper .slide{{ total | plus: 1 }} {
-      display:flex;flex-direction:column;align-items:center;
+    #slide{{ total | plus:1 }}:checked ~ .video-slider-wrapper .slide{{ total | plus:1 }} {
+      display:flex; flex-direction:column; align-items:center;
     }
 
-    .video-slider-wrapper { margin-bottom:40px;width:100%; }
-    .video-wrapper { position:relative;width:100%; }
+    .video-slider-wrapper { margin-bottom:40px; width:100%; }
+    .video-wrapper { position:relative; width:100%; }
     .video-container {
-      position:relative;width:100%;padding-bottom:56.25%;height:0;
-      overflow:hidden;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      position:relative; width:100%; padding-bottom:56.25%; /* 16:9 */ height:0;
+      overflow:hidden; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
     .video-container iframe {
-      position:absolute;top:0;left:0;width:100%;height:100%;border:none;
+      position:absolute; top:0; left:0; width:100%; height:100%; border:none;
     }
 
     /* Desktop arrows */
     .video-wrapper .arrow {
-      position:absolute;top:50%;transform:translateY(-50%);
-      width:50px;height:50px;background:#004AAD;color:#fff;
-      border-radius:50%;display:flex;align-items:center;
-      justify-content:center;cursor:pointer;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);
-      transition:background 0.2s;
-      z-index: 2; /* bring above the video container */
+      position:absolute; top:50%; transform:translateY(-50%);
+      width:50px; height:50px; background:#004AAD; color:#fff;
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.2); transition:background 0.2s;
+      z-index:2;
     }
     .video-wrapper .arrow:hover { background:#00337A; }
     .video-wrapper .prev { left:-70px; }
@@ -59,42 +57,41 @@
     .slide1 .prev, .slide{{ total | plus:1 }} .next { visibility:hidden; }
 
     /* Mobile nav */
-    .mobile-nav { display:none;width:100%;margin-top:20px;justify-content:space-between;align-items:center; }
+    .mobile-nav { display:none; width:100%; margin-top:20px; justify-content:space-between; align-items:center; }
     .mobile-nav .arrow {
-      width:50px;height:50px;background:#004AAD;color:#fff;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;cursor:pointer;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);transition:background 0.2s;
-      z-index: 2;
+      width:50px; height:50px; background:#004AAD; color:#fff; border-radius:50%;
+      display:flex; align-items:center; justify-content:center; cursor:pointer;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2); transition:background 0.2s; z-index:2;
     }
     .mobile-nav .arrow:hover { background:#00337A; }
 
     @media (max-width:768px) {
       .video-wrapper .arrow { display:none; }
       .mobile-nav { display:flex; }
-      .slide1 .mobile-nav .prev,
-      .slide{{ total | plus:1 }} .mobile-nav .next { visibility:hidden; }
+      .slide1 .mobile-nav .prev, .slide{{ total | plus:1 }} .mobile-nav .next { visibility:hidden; }
     }
 
     /* Titles & notice */
-    .slide h2 { text-align:center;color:#004AAD;margin-bottom:10px; }
+    .slide h2 { text-align:center; color:#004AAD; margin-bottom:10px; }
     .slide .notice {
-      display:inline-flex;align-items:center;gap:10px;background:#fff;
-      border-left:4px solid #004AAD;padding:10px 15px;
-      font-weight:600;margin:0 auto 20px;border-radius:4px;
+      display:inline-flex; align-items:center; gap:10px; background:#fff;
+      border-left:4px solid #004AAD; padding:10px 15px; font-weight:600;
+      margin:0 auto 20px; border-radius:4px;
     }
     .slide .notice i { color:#004AAD; }
 
-    /* Take Test button */
+    /* Test button */
     .btn {
-      display:block;margin:20px auto 0;background:#004AAD;color:#fff;
-      padding:15px 30px;font-size:16px;border:none;border-radius:6px;
-      cursor:pointer;transition:background 0.25s ease;
+      display:block; margin:20px auto 0; background:#004AAD; color:#fff;
+      padding:15px 30px; font-size:16px; border:none; border-radius:6px;
+      cursor:pointer; transition:background 0.25s ease;
     }
     .btn:hover { background:#00337A; }
   </style>
 </head>
 <body>
-  <!-- HeyForm modal -->
+
+  <!-- HeyForm modal container -->
   <div
     data-heyform-id="fPdwIszH"
     data-heyform-type="modal"
@@ -111,14 +108,14 @@
     <h1>{{ page.title }}</h1>
     <p class="intro">{{ page.intro }}</p>
 
-    <!-- radios -->
+    <!-- radio inputs -->
     {% for video in site.data.videos %}
       <input type="radio" name="slider" id="slide{{ forloop.index }}" {% if forloop.first %}checked{% endif %}>
     {% endfor %}
     <input type="radio" name="slider" id="slide{{ total | plus:1 }}">
 
     <div class="video-slider-wrapper">
-      <!-- video slides -->
+      <!-- each video slide -->
       {% for video in site.data.videos %}
       <div class="slide slide{{ forloop.index }}">
         <h2>{{ video.title }}</h2>
@@ -127,26 +124,19 @@
           Important: Please watch the full video before moving on!
         </div>
         <div class="video-wrapper">
-          <label for="slide{{ forloop.index }}" class="arrow prev">
-            <i class="fa-solid fa-chevron-left"></i>
-          </label>
+          <label for="slide{{ forloop.index }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
           <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/{{ video.id }}"
-                    allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
-                    allowfullscreen>
+            <iframe
+              src="https://www.youtube.com/embed/{{ video.id }}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
             </iframe>
           </div>
-          <label for="slide{{ forloop.index | plus:1 }}" class="arrow next">
-            <i class="fa-solid fa-chevron-right"></i>
-          </label>
+          <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
         <div class="mobile-nav">
-          <label for="slide{{ forloop.index }}" class="arrow prev">
-            <i class="fa-solid fa-chevron-left"></i>
-          </label>
-          <label for="slide{{ forloop.index | plus:1 }}" class="arrow next">
-            <i class="fa-solid fa-chevron-right"></i>
-          </label>
+          <label for="slide{{ forloop.index }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
+          <label for="slide{{ forloop.index | plus:1 }}" class="arrow next"><i class="fa-solid fa-chevron-right"></i></label>
         </div>
       </div>
       {% endfor %}
@@ -160,10 +150,10 @@
           You’ve completed all training videos. Click below to take the test!
         </div>
         <div class="video-wrapper">
-          <label for="slide{{ total }}" class="arrow prev">
-            <i class="fa-solid fa-chevron-left"></i>
-          </label>
-          <div class="video-container"><!-- placeholder to anchor arrow --></div>
+          <!-- BACK arrow -->
+          <label for="slide{{ total }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
+          <!-- placeholder container so arrow is clickable -->
+          <div class="video-container"></div>
         </div>
         <div class="mobile-nav">
           <label for="slide{{ total }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
@@ -174,15 +164,26 @@
     </div>
   </div>
 
-  <!-- confetti & heyform scripts -->
+  <!-- Confetti & HeyForm scripts -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script src="https://www.unpkg.com/@heyform-inc/embed@latest/dist/index.umd.js"></script>
   <script>
+    // Confetti on final slide
     document.getElementById('slide{{ final }}').addEventListener('change', e => {
       if (e.target.checked) {
         confetti({ particleCount:100, spread:70, origin:{y:0.6} });
       }
     });
+
+    // Fallback JS: ensure Back arrow works
+    document.querySelectorAll('.slide{{ final }} .arrow.prev').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('slide{{ total }}').checked = true;
+      });
+    });
+
+    // Open HeyForm modal
     document.getElementById('testButton').addEventListener('click', () => {
       HeyForm.openModal('fPdwIszH');
     });
