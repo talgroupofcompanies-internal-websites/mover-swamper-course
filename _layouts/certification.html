@@ -124,11 +124,12 @@
           Important: Please watch the full video before moving on!
         </div>
         <div class="video-wrapper">
+          <!-- labels still present for forward/back -->
           <label for="slide{{ forloop.index }}" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></label>
           <div class="video-container">
             <iframe
               src="https://www.youtube.com/embed/{{ video.id }}"
-              allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen>
             </iframe>
           </div>
@@ -152,7 +153,7 @@
         <div class="video-wrapper">
           <!-- JS-controlled Back button -->
           <div id="backButton" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></div>
-          <div class="video-container"><!-- placeholder to anchor arrow --></div>
+          <div class="video-container"></div><!-- placeholder -->
         </div>
         <div class="mobile-nav">
           <div id="backButtonMobile" class="arrow prev"><i class="fa-solid fa-chevron-left"></i></div>
@@ -174,7 +175,18 @@
       }
     });
 
-    // Back buttons work via JS click handler
+    // Universal fallback for all "prev" arrows: wire label prevs to JS
+    document.querySelectorAll('.video-wrapper .arrow.prev, .mobile-nav .arrow.prev').forEach(el => {
+      const target = el.getAttribute('for');
+      if (target) {
+        el.addEventListener('click', e => {
+          e.preventDefault();
+          document.getElementById(target).checked = true;
+        });
+      }
+    });
+
+    // Back button on final slide
     document.getElementById('backButton').addEventListener('click', () => {
       document.getElementById('slide{{ total }}').checked = true;
     });
